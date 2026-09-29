@@ -1,0 +1,3 @@
+/* v1.1: brand and product captions remain readable at small widths. */
+.brand-sub{font-size:clamp(13px,calc(10px + .45vw),23px);line-height:1.4;letter-spacing:.1em;margin-top:.4em}
+@media(max-width:767px){.brand-sub{font-size:clamp(13px,calc(10px + .85vw),18px);letter-spacing:.07em}.brand{gap:.45em}.product-visual .visual-caption{font-size:clamp(13px,calc(11px + .55vw),17px);line-height:1.5;left:6%;right:6%;bottom:4%;overflow-wrap:anywhere}.product-visual img{padding-bottom:3.3em}.product-tabs button{text-wrap:balance}.product-tabs{margin-left:6vw;padding-right:2vw}}
