@@ -52,6 +52,7 @@
   --wrap: 84rem;
   --section: clamp(4.5rem, 8vw, 8rem);
   --flow: cubic-bezier(.22, .68, .28, 1);
+  --motion-accent: #7598b8;
 }
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -96,7 +97,7 @@ img { display: block; width: 100%; max-width: 100%; height: auto; }
 .headline-mask > span { display: block; padding-block: .065em .105em; }
 .hero-intro { margin-top: 1.55rem; max-width: 28rem; color: var(--muted); line-height: 1.86; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: stretch; gap: .65rem; margin-top: 1.9rem; }
-.hero-photo { display: grid; isolation: isolate; overflow: hidden; min-height: clamp(28rem, 41vw, 41rem); background: #303c47; }
+.hero-photo { position: relative; display: grid; isolation: isolate; overflow: hidden; min-height: clamp(28rem, 41vw, 41rem); background: #303c47; }
 .hero-photo > img { width: 100%; height: 100%; min-height: 0; object-fit: cover; object-position: 59% 54%; }
 .hero-note { position: absolute; right: 1rem; bottom: .9rem; color: #fff; background: #122235; padding: .26rem .64rem; font-size: .765rem; letter-spacing: .015em; }
 
@@ -106,7 +107,9 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
 .section-lead > p { justify-self: end; max-width: 32rem; color: var(--muted); }
 .case-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: clamp(.85rem, 2.2vw, 2rem); }
 .case-card { border: 1px solid var(--line); display: flex; flex-direction: column; }
-.case-card > img { aspect-ratio: 1.76; height: auto; object-fit: cover; background: #cad6e1; }
+.case-photo, .process-photo { overflow: hidden; background: #cad6e1; }
+.case-photo { aspect-ratio: 1.76; }
+:is(.case-photo, .process-photo) > img { width: 100%; height: 100%; object-fit: cover; }
 .case-body { padding: clamp(1rem, 2vw, 1.65rem); display: flex; flex-direction: column; flex: 1; }
 .case-method { font-size: .855rem; color: #375571; font-weight: 700; letter-spacing: .05em; margin-bottom: .3rem; }
 .case-body h3, .process-item h3 { color: var(--navy); font-size: 1.19rem; line-height: 1.55; }
@@ -119,7 +122,7 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
 .process-band { background: var(--paper); border-block: 1px solid var(--line); }
 .process-grid { display: grid; list-style: none; padding: 0; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1.15rem 1.6rem; counter-reset: process; }
 .process-item { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 5fr); gap: 1.15rem; align-items: center; padding-block: 1.1rem; border-bottom: 1px solid var(--line); counter-increment: process; }
-.process-item > img { aspect-ratio: 1.42; object-fit: cover; background: #cad6e1; }
+.process-photo { aspect-ratio: 1.42; }
 .process-item h3::before { content: counter(process, decimal-leading-zero); display: block; color: #41678d; font: 600 1.05rem/1.3 var(--sans); margin-bottom: .42rem; font-variant-numeric: tabular-nums; }
 .process-item p { color: var(--muted); font-size: 1rem; line-height: 1.7; margin-top: .4rem; }
 
@@ -130,7 +133,8 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
 .quote-intro .quote-note { margin: .8rem 0 0; font-size: .825rem; }
 .quote-steps { list-style: none; padding: 0; counter-reset: quote; border-top: 1px solid #5a6e88; }
 .quote-steps > li { counter-increment: quote; position: relative; padding: 1.15rem .2rem 1.3rem 3.6rem; border-bottom: 1px solid #5a6e88; }
-.quote-steps li::before { content: counter(quote, decimal-leading-zero); position: absolute; top: 1.18rem; left: .22rem; color: #b7cce4; font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.quote-steps li::before { content: counter(quote, decimal-leading-zero); position: absolute; top: 1.18rem; left: .52rem; color: #b7cce4; font-size: 1.05rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.quote-steps li::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 2px; background: var(--motion-accent); }
 .quote-steps h3 { font-size: 1.16rem; }
 .quote-steps p { margin-top: .3rem; color: #dfe8f2; }
 .site-footer { background: var(--paper); }
@@ -159,16 +163,89 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
 .review-list dt { margin-top: .75rem; font-weight: 700; }
 .review-list dd { background: var(--mist); padding: .5rem .65rem; white-space: pre-wrap; overflow-wrap: anywhere; }
 
-@keyframes hero-photo-in { from { opacity: .2; transform: scale(1.035); } to { opacity: 1; transform: scale(1); } }
+@keyframes hero-photo-in {
+  from { clip-path: inset(0 100% 0 0); transform: scale(1.085); }
+  to { clip-path: inset(0); transform: scale(1); }
+}
+@keyframes surface-glint {
+  from { transform: translateX(-105%) skewX(-18deg); opacity: 0; }
+  34% { opacity: .68; }
+  to { transform: translateX(105%) skewX(-18deg); opacity: 0; }
+}
 @keyframes line-in { from { transform: translateY(103%); } to { transform: translateY(0); } }
-@keyframes rise-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rise-in { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+@keyframes photo-in { from { clip-path: var(--photo-start); transform: scale(1.09); } to { clip-path: inset(0); transform: scale(1); } }
+@keyframes copy-in { from { opacity: 0; translate: -13px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes rule-in { from { scale: 0 1; } to { scale: 1 1; } }
+@keyframes rail-in { from { scale: 1 0; } to { scale: 1 1; } }
+@keyframes shade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes drawer-in { from { translate: 100% 0; } to { translate: 0 0; } }
+
 @media (prefers-reduced-motion: no-preference) {
-  .motion-started .hero-photo img { animation: hero-photo-in .95s var(--flow) both; }
-  .motion-started .headline-mask > span { animation: line-in .72s .22s var(--flow) both; }
-  .motion-started .headline-mask + .headline-mask > span { animation-delay: .34s; }
-  .motion-started :is(.hero-intro, .hero-actions) { animation: rise-in .6s .46s var(--flow) both; }
-  .motion-started .hero-actions { animation-delay: .56s; }
-  .in-view { animation: rise-in .64s var(--flow) both; }
+  .motion-started .hero-photo img { animation: hero-photo-in 1.08s var(--flow) both; }
+  .motion-started .hero-photo::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(95deg, transparent 38%, #d3e8fc75 50%, transparent 62%);
+    animation: surface-glint .94s .25s var(--flow) both;
+  }
+  .motion-started .hero-category { animation: rise-in .57s .13s var(--flow) both; }
+  .motion-started .headline-mask > span { animation: line-in .78s .26s var(--flow) both; }
+  .motion-started .headline-mask + .headline-mask > span { animation-delay: .38s; }
+  .motion-started .hero-intro { animation: rise-in .65s .52s var(--flow) both; }
+  .motion-started .hero-actions { animation: rise-in .65s .67s var(--flow) both; }
+
+  .section-lead, .process-item { position: relative; }
+  :is(.section-lead, .process-item)::after {
+    content: ""; position: absolute; inset: auto 0 -1px; height: 1px;
+    background: var(--motion-accent); transform-origin: left; pointer-events: none;
+  }
+  .motion-ready :is(.section-lead, .process-item):not(.in-view, :focus-within)::after { scale: 0 1; }
+  .in-view:is(.section-lead, .process-item)::after { animation: rule-in .82s var(--flow) both; }
+  .section-lead.in-view > h2 { animation: copy-in .64s var(--flow) both; }
+  .section-lead.in-view > p { animation: rise-in .64s .09s var(--flow) both; }
+
+  .case-photo { --photo-start: inset(100% 0 0); }
+  .process-photo { --photo-start: inset(0 100% 0 0); }
+  .process-item:nth-child(even) .process-photo { --photo-start: inset(0 0 0 100%); }
+  .motion-ready [data-reveal]:not(.in-view, :focus-within) :is(.case-photo, .process-photo) > img { clip-path: var(--photo-start); }
+  .in-view :is(.case-photo, .process-photo) > img { animation: photo-in .88s var(--stagger, 0s) var(--flow) both; }
+  .in-view .case-body, .process-item.in-view > div:last-child { animation: rise-in .66s calc(var(--stagger, 0s) + .12s) var(--flow) both; }
+  .quote-intro.in-view > :is(h2, p, button) { animation: rise-in .62s var(--flow) both; }
+  .quote-intro.in-view > p { animation-delay: .09s; }
+  .quote-intro.in-view > button { animation-delay: .18s; }
+  .quote-steps .in-view > :is(h3, p),
+  .quote-steps .in-view::before { animation: copy-in .64s var(--stagger, 0s) var(--flow) both; }
+  .quote-steps li::after { transform-origin: top; }
+  .motion-ready .quote-steps li:not(.in-view)::after { scale: 1 0; }
+  .quote-steps .in-view::after { animation: rail-in .75s var(--stagger, 0s) var(--flow) both; }
+
+  .drawer:not([hidden]) { animation: drawer-in .32s var(--flow) both; }
+  .drawer-shade:not([hidden]), .quote-dialog[open]::backdrop { animation: shade-in .26s ease-out both; }
+  .quote-dialog[open] { animation: rise-in .3s var(--flow) both; }
+  .quote-dialog [data-quote-summary]:not([hidden]) > :is(h3, dl) { animation: rise-in .32s var(--flow) both; }
+  .quote-dialog [data-quote-summary] > dl { animation-delay: .06s; }
+
+  @supports (animation-timeline: scroll(root block)) {
+    .site-header::after {
+      content: ""; position: absolute; inset: auto 0 -2px; height: 2px;
+      background: #6089ae; transform-origin: left; pointer-events: none;
+      animation: rule-in linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+@media (min-width: 768px) {
+  .case-card:nth-child(2), .process-item:nth-child(even), .quote-steps li:nth-child(2) { --stagger: .1s; }
+  .case-card:nth-child(3), .quote-steps li:nth-child(3) { --stagger: .2s; }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .case-photo, .process-photo { transition: background-color .24s; }
+  :is(.case-photo, .process-photo) > img { transition: scale .52s var(--flow); }
+  :is(.case-card, .process-item):hover img { scale: 1.055; }
+  .case-card { transition: border-color .22s, box-shadow .36s var(--flow); }
+  .case-card:is(:hover, :focus-within) { border-color: #879fb8; box-shadow: 0 12px 26px #14274319; }
+  .text-link { transition: color .22s, translate .32s var(--flow); }
+  .text-link:hover { translate: 4px 0; }
 }
 @media (max-width: 1023px) {
   .hero-message { padding-right: 1.25rem; }
@@ -204,7 +281,7 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
   .case-body { padding: .98rem 1rem .65rem; }
   .process-grid { gap: .25rem; }
   .process-item { padding-block: .83rem 1.15rem; grid-template-columns: minmax(0,2fr) minmax(0,3fr); gap: .85rem; }
-  .process-item > img { aspect-ratio: 1.16; height: 100%; max-height: 10rem; }
+  .process-photo { aspect-ratio: 1.16; height: 100%; max-height: 10rem; }
   .process-item h3 { font-size: 1.0625rem; }
   .process-item h3::before { margin-bottom: .25rem; }
   .process-item p { font-size: .94rem; line-height: 1.64; }
@@ -274,7 +351,7 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
       </div>
       <div class="case-grid">
         <article class="case-card" data-reveal>
-          <img src="assets/work-collar.webp" alt="ボルト穴のあるリング状の切削部品" width="880" height="500" loading="lazy">
+          <div class="case-photo"><img src="assets/work-collar.webp" alt="ボルト穴のあるリング状の切削部品" width="880" height="500" loading="lazy"></div>
           <div class="case-body">
             <p class="case-method">旋盤加工</p>
             <h3>位置決め用カラー</h3>
@@ -283,7 +360,7 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
           </div>
         </article>
         <article class="case-card" data-reveal>
-          <img src="assets/work-bracket.webp" alt="穴あけと曲げ加工を施した板金ブラケット" width="880" height="500" loading="lazy">
+          <div class="case-photo"><img src="assets/work-bracket.webp" alt="穴あけと曲げ加工を施した板金ブラケット" width="880" height="500" loading="lazy"></div>
           <div class="case-body">
             <p class="case-method">板金・曲げ加工</p>
             <h3>取付ブラケット</h3>
@@ -292,7 +369,7 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
           </div>
         </article>
         <article class="case-card" data-reveal>
-          <img src="assets/work-block.webp" alt="穴と段差を切削加工したアルミ製ブロック" width="880" height="500" loading="lazy">
+          <div class="case-photo"><img src="assets/work-block.webp" alt="穴と段差を切削加工したアルミ製ブロック" width="880" height="500" loading="lazy"></div>
           <div class="case-body">
             <p class="case-method">マシニング加工</p>
             <h3>検査治具用ブロック</h3>
@@ -312,19 +389,19 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
         </div>
         <ol class="process-grid">
           <li class="process-item" data-reveal>
-            <img src="assets/process-plan.webp" alt="部品図面と加工前の材料" width="720" height="480" loading="lazy">
+            <div class="process-photo"><img src="assets/process-plan.webp" alt="部品図面と加工前の材料" width="720" height="480" loading="lazy"></div>
             <div><h3>図面・仕様の確認</h3><p>用途、寸法、素材を確認します。既存品の写真からの相談も可能です。</p></div>
           </li>
           <li class="process-item" data-reveal>
-            <img src="assets/process-cut.webp" alt="加工機がアルミ材を切削する様子" width="720" height="480" loading="lazy">
+            <div class="process-photo"><img src="assets/process-cut.webp" alt="加工機がアルミ材を切削する様子" width="720" height="480" loading="lazy"></div>
             <div><h3>切削・穴あけ</h3><p>旋盤やマシニングセンタで、指定の形状と寸法に仕上げます。</p></div>
           </li>
           <li class="process-item" data-reveal>
-            <img src="assets/process-bend.webp" alt="プレスブレーキで板材を曲げる様子" width="720" height="480" loading="lazy">
+            <div class="process-photo"><img src="assets/process-bend.webp" alt="プレスブレーキで板材を曲げる様子" width="720" height="480" loading="lazy"></div>
             <div><h3>板金・組立</h3><p>板材を曲げ、必要に応じて固定金具や別部品と組み合わせます。</p></div>
           </li>
           <li class="process-item" id="quality" data-reveal>
-            <img src="assets/process-check.webp" alt="ノギスで金属部品の寸法を測る様子" width="720" height="480" loading="lazy">
+            <div class="process-photo"><img src="assets/process-check.webp" alt="ノギスで金属部品の寸法を測る様子" width="720" height="480" loading="lazy"></div>
             <div><h3>寸法検査・出荷</h3><p>図面に沿って寸法や外観を確認し、傷や変形を防ぐように梱包します。</p></div>
           </li>
         </ol>
@@ -339,10 +416,10 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
           <button type="button" class="button light" data-quote-open hidden>見積もり相談を試す</button>
           <p class="quote-note">デモ画面では入力内容やファイルは送信されません。</p>
         </div>
-        <ol class="quote-steps" data-reveal>
-          <li><h3>用途と希望条件を伝える</h3><p>用途・数量・希望時期を記入。素材や寸法が未定でも相談できます。</p></li>
-          <li><h3>図面や写真を添える</h3><p>2D図面、スケッチ、見本になる部品の写真などを用意します。</p></li>
-          <li><h3>加工方法と見積もりを確認</h3><p>対応できる加工方法を確認し、費用と納期をすり合わせます。</p></li>
+        <ol class="quote-steps">
+          <li data-reveal><h3>用途と希望条件を伝える</h3><p>用途・数量・希望時期を記入。素材や寸法が未定でも相談できます。</p></li>
+          <li data-reveal><h3>図面や写真を添える</h3><p>2D図面、スケッチ、見本になる部品の写真などを用意します。</p></li>
+          <li data-reveal><h3>加工方法と見積もりを確認</h3><p>対応できる加工方法を確認し、費用と納期をすり合わせます。</p></li>
         </ol>
       </div>
     </section>
@@ -443,6 +520,7 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
   page.classList.add('has-script', 'motion-started');
 
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    page.classList.add('motion-ready');
     const reveal = new IntersectionObserver((entries, observer) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
@@ -450,7 +528,7 @@ h2 { color: var(--navy-deep); font: 600 clamp(2rem, 3.65vw, 3.2rem)/1.34 var(--s
           observer.unobserve(entry.target);
         }
       }
-    }, { threshold: 0.09 });
+    }, { threshold: 0.12 });
     document.querySelectorAll('[data-reveal]').forEach(area => reveal.observe(area));
   }
 
